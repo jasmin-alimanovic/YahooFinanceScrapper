@@ -1,17 +1,23 @@
+using Microsoft.EntityFrameworkCore;
 using YahooFinanceScrapper.Interfaces;
 using YahooFinanceScrapper.Repositories;
 using YahooFinanceScrapper.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 // Register db context
-builder.Services.AddSqlServer<YahooFinanceDbContext>("Server=localhost;Database=yahoo_finance_db;Trusted_Connection=True;TrustServerCertificate=True;");
+builder.Services.AddDbContext<YahooFinanceDbContext>(options =>
+{
+    options.UseSqlServer("Server=localhost;Database=yahoo_finance_db;Trusted_Connection=True;TrustServerCertificate=True;");
+}, ServiceLifetime.Singleton);
 
 // Register repositories
-builder.Services.AddTransient<ITickerRepository, TickerRepository>();
-builder.Services.AddTransient<ITickerSymbolRepository, TickerSymbolRepository>();
-builder.Services.AddTransient<IYahooFinanceScraperService, YahooFinanceScraperService>();
+builder.Services.AddScoped<ITickerRepository, TickerRepository>();
+builder.Services.AddScoped<ITickerSymbolRepository, TickerSymbolRepository>();
+
+// Register services
+builder.Services.AddScoped<IYahooFinanceScraperService, YahooFinanceScraperService>();
+builder.Services.AddScoped<ITickerSymbolService, TickerSymbolService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -35,7 +41,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Tickers}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

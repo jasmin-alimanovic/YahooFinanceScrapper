@@ -4,8 +4,14 @@ using YahooFinanceScrapper.Models;
 
 namespace YahooFinanceScrapper.Repositories;
 
-public class TickerRepository(YahooFinanceDbContext dbContext) : ITickerRepository
+public class TickerRepository : ITickerRepository
 {
+    private readonly YahooFinanceDbContext dbContext;
+
+    public TickerRepository(YahooFinanceDbContext dbContext)
+    {
+        this.dbContext = dbContext;
+    }
 
     public async Task<List<Ticker>> GetAllAsync()
     {
@@ -23,18 +29,25 @@ public class TickerRepository(YahooFinanceDbContext dbContext) : ITickerReposito
     }
     public async Task<Ticker> CreateAsync(Ticker entity)
     {
-        await dbContext.Tickers.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
-
-        var primaryKey = new PrimaryKey<Ticker>(entity);
-        var createdObj = await GetAsync(primaryKey);
-
-        if (createdObj is null)
+        try
         {
-            throw new Exception("Failed to create Ticker");
-        }
+            await dbContext.Tickers.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
 
-        return createdObj;
+            var primaryKey = new PrimaryKey<Ticker>(entity);
+            var createdObj = await GetAsync(primaryKey);
+
+            if (createdObj is null)
+            {
+                throw new Exception("Failed to create Ticker");
+            }
+
+            return createdObj;
+        }
+        catch(Exception e)
+        {
+            throw;
+        }
 
     }
 
@@ -46,5 +59,10 @@ public class TickerRepository(YahooFinanceDbContext dbContext) : ITickerReposito
     public Task EditAsync(PrimaryKey<Ticker> primaryKey, Ticker entity)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Ticker?> GetBySymbolAndDate(string tickerSymbol, DateTime date)
+    {
+        return await dbContext.Tickers.FirstOrDefaultAsync(t => t.TickerName == tickerSymbol && t.Date.Value.Date.Equals(date.Date));
     }
 }

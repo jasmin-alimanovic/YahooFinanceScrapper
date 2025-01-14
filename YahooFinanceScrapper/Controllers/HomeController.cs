@@ -15,10 +15,10 @@ namespace YahooFinanceScrapper.Controllers
             _yahooFinanceScrapperService = yahooFinanceScrapperService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            _yahooFinanceScrapperService.ScrapeAndSaveTickerData("UNB", DateTime.Now);
-            return View();
+            var tickers = await _yahooFinanceScrapperService.GetAllTickers(["NVDA", "WBA", "CEG", "ITCI", "SSL", "RPRX", "PONY", "CPRI", "SNX"], DateTime.UtcNow.AddDays(-5));
+            return Json(tickers);
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,45 @@
+﻿@model List<YahooFinanceScrapper.Models.Ticker>
+@{
+    ViewData["Title"] = "Tickers";
+}
+
+<!--create multiselect dropdown with id = tickerSymbols, it will be populated with javascript-->
+
+<div class="form-group row">
+    <div class="col-md-8">
+        <select name="tickerSymbolsMultiSelect" class="form-control" id="tickerSymbolsMultiSelect" multiple>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <input type="text" class="form-control" id="date" placeholder="Select date">
+    </div>
+</div>
+<p></p>
+<button id="getTickersBtn" class="btn btn-primary">Get Tickers</button>
+
+<!--generate table where fields are properties from Model-->
+<table class="table table-striped mt-5" id="tickersTable">
+    <thead>
+        <tr>
+            <th>Ticker Name</th>
+            <th>Company Name</th>
+            <th>Market Cap</th>
+            <th>Year Founded</th>
+            <th>Number of Employees</th>
+            <th>Headquarters City</th>
+            <th>Headquarters State</th>
+            <th>Date and Time</th>
+            <th>Previous Close Price</th>
+            <th>Open Price</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+<!--load js file tickers.js-->
+@section Scripts {
+	<script src="~/js/tickers.js"></script>
+}
+

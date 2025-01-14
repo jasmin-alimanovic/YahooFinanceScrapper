@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace YahooFinanceScrapper.Helpers;
+﻿namespace YahooFinanceScrapper.Helpers;
 
 public static class DateTimeHelper
 {
